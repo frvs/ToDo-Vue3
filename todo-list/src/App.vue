@@ -67,6 +67,7 @@ export default {
           done: false,
           content: newTodo.value
         });
+        console.log(edit.value)
       }
       newTodo.value = "";
     }
