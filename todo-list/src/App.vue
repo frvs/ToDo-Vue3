@@ -22,7 +22,7 @@
     </form>
 
     <section class="btn-section">
-      <span v-if="edit !== true">
+      <span v-if="!edit">
         <button class="btn btn-success" @click.prevent="addNewTodo" type="button">Add New ToDo</button>
       </span>
       <span v-else>
@@ -67,7 +67,7 @@ export default {
           done: false,
           content: newTodo.value
         });
-        console.log(edit.value)
+        console.log(edit.value);
       }
       newTodo.value = "";
     }
@@ -93,6 +93,7 @@ export default {
       newTodo.value = "";
     }
     return {
+      edit,
       clearInput,
       removeAll,
       markAllasDone,
