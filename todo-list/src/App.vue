@@ -7,7 +7,7 @@
   />
   <div>
     <h1>Vue 3 ToDo App</h1>
-    <form @submit.prevent="addNewTodo">
+    <form @submit.prevent="addNewTodo(index)">
       <div class="mb-3 centralized">
         <label
         for="formGroupExampleInput"
@@ -74,15 +74,21 @@ export default {
     const newTodo = ref("");
     const todos = ref([]);
 
-    function addNewTodo() {
+    function addNewTodo(index) {
+      
       if (newTodo.value !== "") {
         todos.value.push({
           id: Date.now(),
           done: false,
-          content: newTodo.value
+          content: newTodo.value,
+          edit: false
         });
+        
       }
       newTodo.value = "";
+      if (todos.value[index].edit == true){
+        todos.value[index].content = newTodo.value
+      }
     }
     function toggleDone(todo) {
       todo.done = !todo.done;
@@ -91,7 +97,7 @@ export default {
       todos.value.splice(index, 1);
     }
     function editTodo(index){
-      console.log(todos.value[index].content)
+      todos.value.edit = true
       newTodo.value = todos.value[index].content
     }
     function markAllasDone() {
