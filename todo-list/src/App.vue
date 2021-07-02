@@ -1,17 +1,66 @@
 <template>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+    crossorigin="anonymous"
+  />
   <div>
-    <h1>Vue 3 To Do App</h1>
+    <h1>Vue 3 ToDo App</h1>
     <form @submit.prevent="addNewTodo">
-      <label>New To Do</label>
-      <input v-model="newTodo" name="newTodo" />
-      <button>Add New To Do</button>
+      <div class="mb-3 centralized">
+        <label
+        for="formGroupExampleInput"
+        class="form-label">
+        ToDo List
+        </label>
+
+        <input
+          type="text"
+          class="form-control input"
+          id="formGroupExampleInput"
+          placeholder="New ToDo"
+          v-model="newTodo"
+        />
+      </div>
     </form>
-    <button @click="removeAll">Remove All To Dos</button>
-    <button @click="markAllasDone">Mark all as Done</button>
+
+    <section class="btn-section">
+    <button class="btn btn-success"
+    @click.prevent="addNewTodo"
+    type="button">
+    Add New ToDo
+    </button>
+
+    <button class="btn btn-warning"
+    @click.prevent="clearInput"
+    type="button">
+    Clear Input Field
+    </button>
+
+    </section>
+    <section class="btn-section">
+    <button @click="removeAll"
+    class="btn btn-danger">
+    Remove ToDos
+    </button>
+
+    <button @click="markAllasDone"
+    class="btn btn-warning">
+    Mark all as Done
+    </button>
+    </section>
+    
     <ul>
       <li v-for="(todo, index) in todos" :key="todo.id" class="todo">
-        <h3 :class="{done: todo.done }" @click="toggleDone(todo)">{{ todo.content }}</h3>
-        <button @click="removeTodo(index)">Remove To Do</button>
+        <h3 :class="{ done: todo.done }"
+        @click="toggleDone(todo)">
+        {{ todo.content }}
+        </h3>
+
+        <button @click="removeTodo(index)">Remove ToDo</button>
+        <button @click="editTodo(index)">Edit ToDo</button>
+
       </li>
     </ul>
   </div>
@@ -26,29 +75,40 @@ export default {
     const todos = ref([]);
 
     function addNewTodo() {
-      todos.value.push({
-        id: Date.now(),
-        done: false,
-        content: newTodo.value
-      });
-      newTodo.value = '';
+      if (newTodo.value !== "") {
+        todos.value.push({
+          id: Date.now(),
+          done: false,
+          content: newTodo.value
+        });
+      }
+      newTodo.value = "";
     }
-    function toggleDone(todo){
-      todo.done = !todo.done
+    function toggleDone(todo) {
+      todo.done = !todo.done;
     }
-    function removeTodo(index){
-      todos.value.splice(index, 1)
+    function removeTodo(index) {
+      todos.value.splice(index, 1);
     }
-    function markAllasDone(){
-      todos.value.forEach((todo) => todo.done = true)
+    function editTodo(index){
+      console.log(todos.value[index].content)
+      newTodo.value = todos.value[index].content
     }
-    function removeAll(){
-      todos.value = []
+    function markAllasDone() {
+      todos.value.forEach((todo) => (todo.done = true));
+    }
+    function removeAll() {
+      todos.value = [];
+    }
+    function clearInput() {
+      newTodo.value = "";
     }
     return {
+      clearInput,
       removeAll,
       markAllasDone,
       removeTodo,
+      editTodo,
       toggleDone,
       todos,
       newTodo,
@@ -67,10 +127,36 @@ body {
   color: #2c3e50;
   margin-top: 60px;
 }
-.todo{
-  cursor:pointer;
+.title {
+  display: block;
+  font-size: 2.5rem;
+}
+ul{
+padding:0 !important;
+}
+.centralized {
+  width: 30%;
+  margin: 3% auto;
+}
+.form-label {
+  font-size: 2.5rem;
+}
+.input {
+  margin-bottom: 3%;
+  position: relative;
+}
+.btn-section {
+  display:flex;
+  width:30%;
+  justify-content: space-between;
+  margin-inline: auto;
+  margin-bottom: 2%;
+}
+
+.todo {
+  cursor: pointer;
 }
 .done {
-  text-decoration:line-through;
+  text-decoration: line-through;
 }
 </style>
