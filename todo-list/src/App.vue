@@ -1,10 +1,10 @@
 <template>
+<main>
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
     rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-    crossorigin="anonymous"
-  />
+    crossorigin="anonymous"/>
   <div>
     <h1>Vue 3 ToDo App</h1>
     <form @submit.prevent="addNewTodo(index)">
@@ -22,9 +22,8 @@
     </form>
 
     <section class="btn-section">
-      <span v-if="todos.value.edit !== true">
+      <span v-if="edit !== true">
         <button class="btn btn-success" @click.prevent="addNewTodo" type="button">Add New ToDo</button>
-        
       </span>
       <span v-else>
         <button class="btn btn-success" @click.prevent="updateTodo(index)" type="button">Update ToDo</button>
@@ -49,6 +48,7 @@
       </li>
     </ul>
   </div>
+  </main>
 </template>
 
 <script>
@@ -58,14 +58,14 @@ export default {
   setup() {
     const newTodo = ref("");
     const todos = ref([]);
+    let edit = ref(false);
 
     function addNewTodo() {
       if (newTodo.value !== "") {
         todos.value.push({
           id: Date.now(),
           done: false,
-          content: newTodo.value,
-          edit: false
+          content: newTodo.value
         });
       }
       newTodo.value = "";
@@ -77,8 +77,8 @@ export default {
       todos.value.splice(index, 1);
     }
     function editTodo(index) {
-      todos.value.edit = true;
-      console.log(todos.value.edit);
+      edit.value = true;
+      console.log(edit.value);
       newTodo.value = todos.value[index].content;
     }
     function updateTodo() {}
