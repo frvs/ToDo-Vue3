@@ -22,7 +22,7 @@
         </div>
       </form>
 
-      <section class="btn-section">
+      <section class="btn-section text-nowrap gap-2">
         <span v-if="!edit">
           <button class="btn btn-success" @click.prevent="addNewTodo" type="button">Add New ToDo</button>
         </span>
@@ -32,7 +32,7 @@
 
         <button class="btn btn-warning" @click.prevent="clearInput" type="button">Clear Input Field</button>
       </section>
-      <section class="btn-section">
+      <section class="btn-section text-nowrap gap-2">
         <button @click="removeAll" class="btn btn-danger">Remove ToDos</button>
 
         <button @click="markAllasDone" class="btn btn-warning">Mark all as Done</button>
@@ -43,7 +43,7 @@
           <h3 :class="{ done: todo.done }" @click="toggleDone(todo)">
             {{ todo.content }}
           </h3>
-          <section class="btn-section">
+          <section class="btn-section text-nowrap gap-2">
           <button class="btn btn-danger" @click="removeTodo(index)">Remove ToDo</button>
           <button class="btn btn-info" @click="editTodo(index)">Edit ToDo</button>
           </section>
@@ -135,11 +135,15 @@ ul {
   padding: 0 !important;
 }
 .centralized {
-  width: 30%;
+  /* width: 30%; */
   margin: 3% auto;
 }
 .form-label {
   font-size: 2.5rem;
+}
+.form-control{
+  margin-inline:auto !important;
+  width: 250px !important;
 }
 .input {
   margin-bottom: 3%;
@@ -147,8 +151,8 @@ ul {
 }
 .btn-section {
   display: flex;
-  width: 30%;
-  justify-content: space-between;
+  width: 100%;
+  justify-content: space-around;
   margin-inline: auto;
   margin-bottom: 2%;
 }
