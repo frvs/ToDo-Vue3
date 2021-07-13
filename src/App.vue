@@ -65,7 +65,7 @@ export default {
     let done = ref(false);
     let todoToSave = localStorage.getItem("savedTodos");
 
-    function addNewTodo(index) {
+    function addNewTodo() {
       if (edit.value) {
         updateTodo();
       } else if (newTodo.value !== "") {
@@ -74,15 +74,13 @@ export default {
           done: false,
           content: newTodo.value
         });
-        if (todoToSave) {
-          selectedIndex.value = index;
-          todoToSave = JSON.stringify(todoToSave);
-          todoToSave = JSON.parse(todoToSave);
-          todos.value = todoToSave;
-        } else {
-          todoToSave = todos.value;
-        }
+      //   if (todoToSave) {
+      //     selectedIndex.value = index;
+      //     todos.value = todoToSave;
+      //   } else {
+      //     }
       }
+          todoToSave = todos.value;
       localStorage.setItem("savedTodos", JSON.stringify(todoToSave));
       newTodo.value = "";
     }
