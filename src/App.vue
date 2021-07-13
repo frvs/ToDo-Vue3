@@ -78,20 +78,13 @@ export default {
           selectedIndex.value = index;
           todoToSave = JSON.stringify(todoToSave);
           todoToSave = JSON.parse(todoToSave);
-          if (newTodo.value !== "") {
-            todos.value.push({
-              id: Date.now(),
-              done: false,
-              content: newTodo.value
-            });
-          }
+          todos.value = todoToSave;
         } else {
           todoToSave = todos.value;
         }
       }
       localStorage.setItem("savedTodos", JSON.stringify(todoToSave));
       newTodo.value = "";
-      todos.value = todoToSave;
     }
 
     function toggleDone(index) {
@@ -117,13 +110,6 @@ export default {
       todos.value.forEach(element => { 
         element.done = !element.done;
       });
-      // todos.value = todoToSave.map(todo => ({ ...todo, done: true }));
-      // todoToSave.value = todoToSave.map((x) => {
-      //   x.done == true ? (x.done = false) : (x.done = true);
-      // });
-      // todos.value = todos.value.map((x) => {
-      //   x.done == true ? (x.done = false) : (x.done = true);
-      // })
       localStorage.setItem("savedTodos", JSON.stringify(todoToSave));
     }
 
