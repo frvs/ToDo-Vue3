@@ -8,7 +8,7 @@
     />
     <div>
       <h1>Vue 3 ToDo App</h1>
-      <form @submit.prevent="addNewTodo">
+      <form @submit="addNewTodo">
         <div class="mb-3 centralized">
           <label for="formGroupExampleInput" class="form-label"> ToDo List </label>
 
@@ -24,28 +24,28 @@
 
       <section class="btn-section text-nowrap gap-2">
         <span v-if="!edit">
-          <button class="btn btn-success" @click.prevent="addNewTodo" type="button">Add New ToDo</button>
+          <button class="btn btn-success" v-on:click="addNewTodo(index)" type="button">Add New ToDo</button>
         </span>
         <span v-else>
-          <button class="btn btn-success" @click.prevent="updateTodo" type="button">Update ToDo</button>
+          <button class="btn btn-success" @click="updateTodo" type="button">Update ToDo</button>
         </span>
 
-        <button class="btn btn-warning" @click.prevent="clearInput" type="button">Clear Input Field</button>
+        <button class="btn btn-warning" @click="clearInput" type="button">Clear Input Field</button>
       </section>
       <section class="btn-section text-nowrap gap-2">
-        <button @click="removeAll" class="btn btn-danger">Remove ToDos</button>
+        <button @click="removeAll(todo)" class="btn btn-danger">Remove ToDos</button>
 
         <button @click="markAllasDone" class="btn btn-warning">Mark all as Done</button>
       </section>
 
       <ul>
         <li v-for="(todo, index) in todos" :key="todo.id" class="todo">
-          <h3 :class="{ done: todo.done }" @click="toggleDone(todo)">
+          <h3 :class="{ done: todo.done }" @click="toggleDone(index)">
             {{ todo.content }}
           </h3>
           <section class="btn-section text-nowrap gap-2">
-          <button class="btn btn-danger" @click="removeTodo(index)">Remove ToDo</button>
-          <button class="btn btn-info" @click="editTodo(index)">Edit ToDo</button>
+            <button class="btn btn-danger" @click="removeTodo(index)">Remove ToDo</button>
+            <button class="btn btn-info" @click="editTodo(index)">Edit ToDo</button>
           </section>
         </li>
       </ul>
@@ -59,29 +59,50 @@ import { ref } from "vue";
 export default {
   setup() {
     const newTodo = ref("");
-    const todos = ref([]);
+    const todos = ref(todoToSave || []);
     let edit = ref(false);
     let selectedIndex = ref(0);
+    let done = ref(false);
+    let todoToSave = localStorage.getItem("savedTodos");
 
-    function addNewTodo() {
-      if(edit.value){
-          updateTodo()
-        }
-      else if (newTodo.value !== "") {
+    function addNewTodo(index) {
+      if (edit.value) {
+        updateTodo();
+      } else if (newTodo.value !== "") {
         todos.value.push({
           id: Date.now(),
           done: false,
           content: newTodo.value
         });
-        
+        if (todoToSave) {
+          selectedIndex.value = index;
+          todoToSave = JSON.stringify(todoToSave);
+          todoToSave = JSON.parse(todoToSave);
+          if (newTodo.value !== "") {
+            todos.value.push({
+              id: Date.now(),
+              done: false,
+              content: newTodo.value
+            });
+          }
+        } else {
+          todoToSave = todos.value;
+        }
       }
+      localStorage.setItem("savedTodos", JSON.stringify(todoToSave));
       newTodo.value = "";
+      todos.value = todoToSave;
     }
-    function toggleDone(todo) {
-      todo.done = !todo.done;
+
+    function toggleDone(index) {
+      todos.value[index].done = !todos.value[index].done;
+      done = todos.value[index].done;
+      localStorage.setItem("savedTodos", JSON.stringify(todos.value));
     }
+
     function removeTodo(index) {
-      todos.value.splice(index, 1);
+      todoToSave.splice(index, 1);
+      localStorage.setItem("savedTodos", JSON.stringify(todoToSave));
     }
     function editTodo(index) {
       edit.value = true;
@@ -89,20 +110,34 @@ export default {
       selectedIndex.value = index;
     }
     function updateTodo() {
-      todos.value.splice(selectedIndex.value, 1, {content: newTodo.value});
+      todos.value.splice(selectedIndex.value, 1, { content: newTodo.value });
       clearInput();
     }
     function markAllasDone() {
-      todos.value.forEach((todo) => (todo.done = true));
+      todos.value.forEach(element => { 
+        element.done = !element.done;
+      });
+      // todos.value = todoToSave.map(todo => ({ ...todo, done: true }));
+      // todoToSave.value = todoToSave.map((x) => {
+      //   x.done == true ? (x.done = false) : (x.done = true);
+      // });
+      // todos.value = todos.value.map((x) => {
+      //   x.done == true ? (x.done = false) : (x.done = true);
+      // })
+      localStorage.setItem("savedTodos", JSON.stringify(todoToSave));
     }
+
     function removeAll() {
-      todos.value = [];
+      localStorage.clear();
+      todos.value = todoToSave;
     }
     function clearInput() {
       edit.value = false;
       newTodo.value = "";
     }
     return {
+      done,
+      todoToSave,
       selectedIndex,
       edit,
       clearInput,
@@ -143,8 +178,8 @@ ul {
 .form-label {
   font-size: 2.5rem;
 }
-.form-control{
-  margin-inline:auto !important;
+.form-control {
+  margin-inline: auto !important;
   width: 250px !important;
 }
 .input {
